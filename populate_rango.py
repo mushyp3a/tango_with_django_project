@@ -1,5 +1,6 @@
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tango_with_django_project.settings')
+import random as r
 
 import django
 django.setup()
@@ -24,13 +25,13 @@ def populate():
     ]
 
     cats = {
-        'python': {'pages': python_pages},
-        'Django': {'pages': django_pages},
-        'Other Frameworks': {'pages': other_pages}
+        'python': {'pages': python_pages, 'views': 128, 'likes': 64},
+        'Django': {'pages': django_pages, 'views': 64, 'likes': 32},
+        'Other Frameworks': {'pages': other_pages, 'views': 32, 'likes': 16}
     }
 
     for cat, cat_data in cats.items():
-        c = add_cat(cat)
+        c = add_cat(cat, cat_data['views'], cat_data['likes'])
         for p in cat_data['pages']:
             add_page(c, p['title'], p['url'])
 
@@ -45,8 +46,8 @@ def add_page(cat, title, url, views=0):
     p.save()
     return p
 
-def add_cat(name):
-    c = Category.objects.get_or_create(name=name)[0]
+def add_cat(name, views=0, likes=0):
+    c = Category.objects.get_or_create(name=name, views=views, likes=likes)[0]
     c.save()
     return c
 
